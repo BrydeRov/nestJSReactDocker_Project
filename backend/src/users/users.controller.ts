@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common'
-import { UsersService } from './users.service'
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('users')   // ← ¿tiene 'users' aquí?
+@Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) { }
 
-    @Get()               // ← ¿tiene @Get() sin parámetros?
-    findAll() {
-        return this.usersService.findAll()
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
 }
