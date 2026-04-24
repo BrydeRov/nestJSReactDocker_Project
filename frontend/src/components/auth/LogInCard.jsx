@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { FaGoogle, FaApple } from 'react-icons/fa'
 
-export default function App() {
+export default function LoginCard() {
   const [view, setView] = useState('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -16,18 +16,21 @@ export default function App() {
   const handleSubmit = async () => {
     const url =
       view === 'login'
-        ? 'http://localhost:3000/auth/login'
-        : 'http://localhost:3000/auth/register'
+        ? `https://jubilant-halibut-qxq6xp9gwrgh67j9-3000.app.github.dev/auth/login`
+        : `https://jubilant-halibut-qxq6xp9gwrgh67j9-3000.app.github.dev/auth/register`
 
     const body =
       view === 'login'
         ? { email, password }
         : { name, email, password }
 
+
+    console.log('Enviando datos:', body)
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      credentials: 'include' // Incluir cookies para autenticación
     })
 
     const data = await res.json()
