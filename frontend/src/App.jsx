@@ -1,7 +1,11 @@
-import Page from "@/components/dashboard/layout";
 import { useState, createContext, useEffect } from "react";
 import LoginCard from "./components/auth/LogInCard";
 import Layout from "@/components/dashboard/layout";
+import PipelinesCard from "./components/dashboard/PipelinesCard";
+import ServerHealthCard from "./components/dashboard/ServerHealthCard";
+import ContainersCard from "./components/dashboard/ContainersCard";
+import AlertsPanel from "./components/dashboard/AlertsCard";
+import AlertsCard from "./components/dashboard/AlertsCard";
 
 const AuthContext = createContext()
 
@@ -30,7 +34,7 @@ export default function App() {
         return
       }
 
-      const data = await res.json()  // ← must be awaited
+      const data = await res.json()
       setUser(data)
       console.log('Data CHeckAUth: ',data)
     } catch(error) {
@@ -44,11 +48,17 @@ export default function App() {
   useEffect(() => { checkAuth() }, [])
   if(loading) return <div>Loading...</div>
 
-if (!user) return <LoginCard onLogin={checkAuth} />
+  if (!user) return <LoginCard onLogin={checkAuth} />
 
   return(
     <Layout user={user} handleLogout={handleLogout}>
-
+      
+      <div className="flex flex-wrap justify-center gap-5">
+        <PipelinesCard/>
+        <ServerHealthCard/>
+        <ContainersCard/>
+        <AlertsCard/>
+      </div>
     </Layout>
   )
 }

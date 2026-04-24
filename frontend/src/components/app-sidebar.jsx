@@ -26,7 +26,7 @@ export function AppSidebar({ user, handleLogout }) {
     },
     teams: [
       {
-        name: "Acme Inc",
+        name: "DevOps HQ",
         logo: (
           <GalleryVerticalEndIcon />
         ),
