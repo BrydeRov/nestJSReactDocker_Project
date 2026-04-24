@@ -12,15 +12,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('dashboard')
-  @UseGuards(JwtAuthGuard)
-  getProfile(@Req() req) {
-    return req.user; // Assuming the user info is attached to the request by the JwtAuthGuard
-  }
-
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   getDashboard(@Req() req) {
-    return req.user; // Assuming the user info is attached to the request by the JwtAuthGuard
+    console.log(req)
+    return this.usersService.findById(req.user.userId)
   }
 }

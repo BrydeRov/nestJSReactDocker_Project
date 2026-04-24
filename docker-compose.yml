@@ -29,6 +29,8 @@ services:
       - /app/node_modules
     networks:
       - app-network
+    env_file:
+      - ./backend/.env
 
   frontend:
     build: ./frontend
@@ -41,6 +43,8 @@ services:
       - /app/node_modules
     networks:
       - app-network
+    env_file:
+      - ./frontend/.env
 
 volumes:
   pgdata:

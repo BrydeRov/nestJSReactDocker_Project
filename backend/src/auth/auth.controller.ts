@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Res } from '@nestjs/common'
+import { Controller, Post, Body, Res, HttpStatus, UnauthorizedException } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { Request } from 'express'
+import type { Response } from 'express';
 
 @Controller('auth')
 export class AuthController { 
@@ -14,18 +14,30 @@ export class AuthController {
   @Post('login')
   async login(
     @Body() body: { email: string; password: string },
-    @Res({ passthrough: true }) res: Request
+    @Res({ passthrough: true }) res: Response
   ) {
-    const token = await this.authService.login(body.email, body.password);
+    try {
+      const token = await this.authService.login(body.email, body.password);
 
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: true, //HTTPS only
-      sameSite: 'lax', // CSRF protection
-      path: '/', // Cookie available on all routes
-      maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days expiration
-    });
+      res.cookie('access_token', token, {
+        httpOnly: true,
+        secure: false, //HTTPS only
+        sameSite: 'lax', // CSRF protection
+        path: '/', // Cookie available on all routes
+        maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days expiration
+      });
+  
+      return { message: 'Login successful' };
+      
+    } catch (error) {
+      console.log('Login error:', error);
+      throw new UnauthorizedException('Credenciales inválidas')
+    }
+  }
 
-    return { message: 'Login successful' };
+  @Post('logout')
+    logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token')
+    return { message: 'Logged out' }
   }
 }

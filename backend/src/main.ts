@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import cookieParser from 'cookie-parser'
 
 /**
   ## Issue with codespace environment
@@ -16,11 +18,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  console.log('Starting server...');
+  app.use(cookieParser())
+
   app.enableCors({
     origin: [
       'http://localhost:5173', // React development server
-      'https://jubilant-halibut-qxq6xp9gwrgh67j9-5173.app.github.dev', // Codespaces URL for React (replace with your actual Codespaces URL)
+      // 'https://jubilant-halibut-qxq6xp9gwrgh67j9-5173.app.github.dev', // Codespaces URL for React (replace with your actual Codespaces URL)
     ], // Allow all origins for development
     credentials: true, // Enable for JWT in cookies
   });

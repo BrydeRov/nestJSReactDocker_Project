@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { FaGoogle, FaApple } from 'react-icons/fa'
 
-export default function LoginCard() {
+export default function LoginCard({ onLogin }) {
   const [view, setView] = useState('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -16,36 +16,49 @@ export default function LoginCard() {
   const handleSubmit = async () => {
     const url =
       view === 'login'
-        ? `https://jubilant-halibut-qxq6xp9gwrgh67j9-3000.app.github.dev/auth/login`
-        : `https://jubilant-halibut-qxq6xp9gwrgh67j9-3000.app.github.dev/auth/register`
+        ? `${import.meta.env.VITE_BACKEND_URL}/auth/login`
+        : `${import.meta.env.VITE_BACKEND_URL}/auth/register`
 
     const body =
       view === 'login'
         ? { email, password }
         : { name, email, password }
 
-
-    console.log('Enviando datos:', body)
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      credentials: 'include' // Incluir cookies para autenticación
-    })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      setMessage(data.message || 'Error')
+    if (!email || !password) {
+      setMessage('Por favor completa todos los campos')
+      return
+    }
+    if (view === 'register' && !name) {
+      setMessage('Por favor ingresa tu nombre')
       return
     }
 
-    if (view === 'login') {
-      setToken(data.access_token)
-      setMessage('Login exitoso ✅')
-    } else {
-      setMessage('Registro exitoso ✅ Ahora inicia sesión')
-      setView('login')
+    console.log('Enviando datos:', body)
+    try{
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        credentials: 'include'   // ← close here, no .then()
+      }).then(async response => {
+        const data = await response.json()
+        console.log('Respuesta del servidor:', response)
+        if (!response.ok) {
+          setMessage(data.message || 'Error')
+          return
+        }
+        if (view === 'login') {
+          setToken(data.access_token)
+          setMessage('Login exitoso ✅')
+          onLogin()
+        } else {
+          setMessage('Registro exitoso ✅ Ahora inicia sesión')
+          setView('login')
+        }
+      })
+    }catch (error) {
+      console.log(error)
+      setMessage('Error de red o servidor')
     }
   }
 

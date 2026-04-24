@@ -14,10 +14,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-export default function Page() {
+export default function Layout({ user, handleLogout }) {
+  console.log(user)
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} handleLogout={handleLogout}/>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-3">
