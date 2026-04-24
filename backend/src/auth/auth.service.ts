@@ -24,7 +24,7 @@ export class AuthService {
     if (!valid) throw new UnauthorizedException('Credenciales inválidas')
 
     const payload = { sub: user.id, email: user.email }
-    return { access_token: this.jwtService.sign(payload) }
+    return this.jwtService.sign(payload)
   }
 
   async register(name: string, email: string, password: string) {
