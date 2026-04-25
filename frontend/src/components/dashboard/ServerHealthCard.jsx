@@ -3,28 +3,20 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 // import { Badge } from "@/components/ui/badge";
 // import { BadgeCheck } from 'lucide-react'
 import { Progress } from "../ui/progress";
-import { useEffect } from "react";
+// import { useEffect, useState } from "react";
+import { usePolling } from "@/hooks/usePolling";
 
 export default function ServerHealthCard() {
-    const hardwareUsage = [
-      { name: 'CPU', data: 34 },
-      { name: 'Memory', data: 61 },
-      { name: 'Uptime', data: '14d 6h' },
-      { name: 'Disk', data: 22 },
-    ]
-
-    const getMetrics = async() => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dashboard/metrics`, {
-        credentials: 'include'
-      })
-      
-      const data = await res.json();
-      console.log(data)
-    }
-    
-    useEffect(() => {
-      getMetrics()
-    },[])
+  const { data } = usePolling(        // ← directly here, not inside any function
+    `${import.meta.env.VITE_BACKEND_URL}/dashboard/metrics`
+  )  
+  console.log(data)  
+  const hardwareUsage = [
+    { name: 'CPU',    data: data?.cpu    ?? 0  },
+    { name: 'Memory', data: data?.memory ?? 0  },
+    { name: 'Uptime', data: data?.uptime ?? '...' },
+    { name: 'Disk',   data: data?.disk   ?? 0  },
+  ]
 
   return(
     <Card size="sm" className="w-full max-w-sm">
@@ -44,9 +36,9 @@ export default function ServerHealthCard() {
             <div className="flex flex-col border border-secondary shadow-lg rounded-md p-3 w-44">
               <div className="flex flex-row justify-between">
               <p className="text-base">{ el?.name }</p>
-              <p className="text-lg">{!isNaN(el?.data) && `${el?.data}%`}</p>
+              { el?.name !== 'Uptime' && <p className="text-lg"> {`${el?.data}%`}</p>}
               </div>
-              { !isNaN(el?.data) ? <Progress value={el?.data} color={colorOnUsage(el?.data)} /> : el.data }
+              { el?.name !== 'Uptime' ? <Progress value={el?.data} color={colorOnUsage(el?.data)} /> : el.data }
             </div>
           )
         })}

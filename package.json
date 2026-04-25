@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/node": "^25.6.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1"
   }
 }
