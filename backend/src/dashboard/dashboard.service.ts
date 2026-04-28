@@ -24,7 +24,6 @@ export class DashboardService {
   }
 
   async getPipelines() {
-    console.log('Enters function getPipelines')
     const octokit = new Octokit({
       auth: process?.env.GITHUB_TOKEN || 'token'
     });
@@ -35,13 +34,12 @@ export class DashboardService {
       per_page: 5
     });
 
-    return { data: JSON.stringify(data.workflow_runs.map(run => ({
+    return data.workflow_runs.map(run => ({
         id: run?.id,
         name: run?.name,
         status: run.status,
         conclusion: run?.conclusion,
         duration: (new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000
-      })))
-    }
+      }))
   }
 }
