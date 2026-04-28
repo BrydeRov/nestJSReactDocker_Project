@@ -1,9 +1,15 @@
 import { currentLoad, mem, fsSize } from 'systeminformation';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Octokit } from '@octokit/rest';
-
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { PipelinesGateway } from './pipelines.gateway';
 @Injectable()
 export class DashboardService {
+  private logger = new Logger('DashboardService')
+  private lastData: string = ''
+  
+  constructor(private pipelinesGateway: PipelinesGateway) {}
+
   async getMetrics() {
     const [cpu, memory, disk] = await Promise.all([
       currentLoad(),
@@ -11,7 +17,7 @@ export class DashboardService {
       fsSize(),
     ]);
 
-    const uptime = process.uptime()
+    const uptime = process?.uptime()
     const hours = Math.floor(uptime / 3600)
     const mins = Math.floor((uptime % 3600) / 60)
 
@@ -41,5 +47,21 @@ export class DashboardService {
         conclusion: run?.conclusion,
         duration: (new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000
       }))
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async checkPipelines(){
+    this.logger.log('Checking pipelines . . .')
+    try{
+      const pipelines = await this.getPipelines()
+      const newData = JSON.stringify(pipelines)
+
+      if(newData !== this.lastData){
+        this.logger.log('Pipelines changed, emitting update')
+        this.pipelinesGateway.emitPipelinesUpdate(pipelines)
+      }
+    }catch(error){
+      this.logger.error('Error checking pipelines')
+    }
   }
 }

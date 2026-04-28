@@ -12,10 +12,12 @@ import {
   AlertTriangle,
   HelpCircle,
 } from 'lucide-react';
+import { usePipelines } from "@/hooks/usePipelines";
+import { Skeleton } from "../ui/skeleton";
 
 
 export default function PipelinesCard() {
-  const { data } = usePolling(`${import.meta.env.VITE_BACKEND_URL}/dashboard/pipelines`)
+  const { pipelines, connected } = usePipelines()
 
   return(
     <Card size="sm" className="w-full max-w-sm">
@@ -23,7 +25,7 @@ export default function PipelinesCard() {
         <CardTitle>Pipeline - Github Actions</CardTitle>
       </CardHeader>
       <CardContent>
-        {data?.map((el, index) => {
+        {pipelines?.map((el, index) => {
         
         
       const statusColor = (status) =>
@@ -60,6 +62,19 @@ export default function PipelinesCard() {
             </div>
           )
         })}
+        {pipelines?.length === 0 &&  Array.from({ length: 3 }, (_, i) => (
+          <div className="flex flex-col my-2">
+            <div className="flex flex-row justify-between w-full">
+              <Card className='w-full'>
+                <CardContent className='flex flex-row justify-between'>
+                  <Skeleton className="h-6 w-32 rounded-md my-auto" />
+                  <Skeleton className="h-8 w-20 rounded-lg" />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        ))
+}
       </CardContent>
       <CardFooter className='grid grid-flow-col grid-cols-3 border'>
         <p className="col-span-2">Último deploy: hace 12 min</p>
