@@ -18,7 +18,7 @@ export default function ContainersCard() {
         <CardTitle>Containers - Docker</CardTitle>
       </CardHeader>
       <CardContent>
-        {containersStatus?.map(el => {
+        {containersStatus?.map((el, index) => {
           const statusColor = (status) => ({
             healthy: 'successful',
             degraded: 'warning',
@@ -26,7 +26,7 @@ export default function ContainersCard() {
           }[status] || 'default');
             
           return(
-            <div className="flex flex-col">
+            <div key={index} className="flex flex-col">
               <div className="flex flex-row justify-between">
                   <div className='flex flex-col'>
                     <p className="text-sm">{el?.name}</p>
@@ -37,7 +37,7 @@ export default function ContainersCard() {
                   <BadgeCheck data-icon="inline-start" />
                 </Badge>
               </div>
-              <div class="flex-1 border-t border-secondary my-2"></div>
+              <div className="flex-1 border-t border-secondary my-2"></div>
             </div>
           )
         })}

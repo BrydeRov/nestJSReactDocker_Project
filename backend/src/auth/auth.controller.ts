@@ -21,8 +21,9 @@ export class AuthController {
 
       res.cookie('access_token', token, {
         httpOnly: true,
-        secure: false, //HTTPS only
-        sameSite: 'lax', // CSRF protection
+        secure: true, //HTTPS only
+        sameSite: 'none', // use only for gitbhub codespaces
+        // sameSite: 'lax', // CSRF protection
         path: '/', // Cookie available on all routes
         maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days expiration
       });

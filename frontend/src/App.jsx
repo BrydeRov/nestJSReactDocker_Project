@@ -22,7 +22,7 @@ export default function App() {
   }
 
    const checkAuth = async () => {  // ← must be async
-    console.log('checkAuth')
+    // console.log('checkAuth')
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/profile`, {
         credentials: 'include'
@@ -36,7 +36,7 @@ export default function App() {
 
       const data = await res.json()
       setUser(data)
-      console.log('Data CHeckAUth: ',data)
+      // console.log('Data CHeckAUth: ',data)
     } catch(error) {
       console.log(error)
       setUser(null)

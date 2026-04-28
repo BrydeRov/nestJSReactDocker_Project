@@ -10,7 +10,6 @@ export default function ServerHealthCard() {
   const { data } = usePolling(        // ← directly here, not inside any function
     `${import.meta.env.VITE_BACKEND_URL}/dashboard/metrics`
   )  
-  console.log(data)  
   const hardwareUsage = [
     { name: 'CPU',    data: data?.cpu    ?? 0  },
     { name: 'Memory', data: data?.memory ?? 0  },
@@ -24,7 +23,7 @@ export default function ServerHealthCard() {
         <CardTitle className='font-bold text-gray-300'>Server Health</CardTitle>
       </CardHeader>
       <CardContent className='flex flex-wrap justify-center gap-2 w-full'>
-        {hardwareUsage?.map(el => {            
+        {hardwareUsage?.map((el, index) => {            
           const colorOnUsage = (usage) => {
             if(usage >= 85) return 'bg-red-500'
             else if(usage >= 55){ return 'bg-yellow-500' }
@@ -33,7 +32,7 @@ export default function ServerHealthCard() {
           }
 
           return(
-            <div className="flex flex-col border border-secondary shadow-lg rounded-md p-3 w-44">
+            <div key={index} className="flex flex-col border border-secondary shadow-lg rounded-md p-3 w-44">
               <div className="flex flex-row justify-between">
               <p className="text-base">{ el?.name }</p>
               { el?.name !== 'Uptime' && <p className="text-lg"> {`${el?.data}%`}</p>}

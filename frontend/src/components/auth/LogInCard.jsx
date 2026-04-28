@@ -12,12 +12,13 @@ export default function LoginCard({ onLogin }) {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [token, setToken] = useState('')
-
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+  
   const handleSubmit = async () => {
     const url =
       view === 'login'
-        ? `${import.meta.env.VITE_BACKEND_URL}/auth/login`
-        : `${import.meta.env.VITE_BACKEND_URL}/auth/register`
+        ? `${API_URL}/auth/login`
+        : `${API_URL}/auth/register`
 
     const body =
       view === 'login'

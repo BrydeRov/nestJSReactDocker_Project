@@ -24,21 +24,24 @@ export class DashboardService {
   }
 
   async getPipelines() {
+    console.log('Enters function getPipelines')
     const octokit = new Octokit({
-      auth: 'token'
-    })
+      auth: process?.env.GITHUB_TOKEN || 'token'
+    });
+
     const { data } = await octokit.actions.listWorkflowRunsForRepo({
-      owner: process.env.GITHUB_OWNER || 'default',
-      repo: process.env.GITHUB_REPO || 'somerepo',
+      owner: process?.env.GITHUB_OWNER || 'default',
+      repo: process?.env.GITHUB_REPO || 'somerepo',
       per_page: 5
     });
 
-    data?.json(data.workflow_runs.map(run => ({
-      id: run?.id,
-      name: run?.name,
-      status: run.status,
-      conclusion: run?.conclusion,
-      duration: run?.duration
-    })))
+    return { data: JSON.stringify(data.workflow_runs.map(run => ({
+        id: run?.id,
+        name: run?.name,
+        status: run.status,
+        conclusion: run?.conclusion,
+        duration: (new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000
+      })))
+    }
   }
 }

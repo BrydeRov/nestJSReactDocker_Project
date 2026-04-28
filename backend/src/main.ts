@@ -19,11 +19,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser())
-
+  console.log('============ CHECKING CORS ============')
   app.enableCors({
     origin: [
       'http://localhost:5173', // React development server
-      // 'https://jubilant-halibut-qxq6xp9gwrgh67j9-5173.app.github.dev', // Codespaces URL for React (replace with your actual Codespaces URL)
+      'https://stunning-space-lamp-v5vw5qg7xr729rx-5173.app.github.dev', // Codespaces URL for React (replace with your actual Codespaces URL)
     ], // Allow all origins for development
     credentials: true, // Enable for JWT in cookies
   });

@@ -11,4 +11,10 @@ export class DashboardController {
   getMetrics() {
     return this.dashboardService.getMetrics();
   }
+
+  @Get('pipelines')
+  @UseGuards(JwtAuthGuard)
+  getPipelines() {
+    return this.dashboardService.getPipelines()
+  }
 }
