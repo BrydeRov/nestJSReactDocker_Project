@@ -53,7 +53,7 @@ export default function App() {
   return(
     <Layout user={user} handleLogout={handleLogout}>
       
-      <div className="flex flex-wrap justify-center gap-5">
+      <div className="flex flex-wrap justify-center gap-5 w-full">
         <PipelinesCard/>
         <ServerHealthCard/>
         <ContainersCard/>

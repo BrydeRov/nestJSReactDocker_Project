@@ -42,10 +42,15 @@ export class DashboardService {
 
     return data.workflow_runs.map(run => ({
         id: run?.id,
-        name: run?.name,
+        name: `${run?.name} #${run?.run_number}`,
+        commit: run?.head_sha.substring(0,7),
+        commit_message: run?.display_title,
+        branch: run?.head_branch,
         status: run.status,
         conclusion: run?.conclusion,
-        duration: (new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000
+        createdAt: run?.created_at,
+        duration: (new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000,
+        url: run?.html_url
       }))
   }
 
