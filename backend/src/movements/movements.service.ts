@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Movement } from './movement.entity';
 import { Product } from 'src/products/product.entity';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class MovementsService {
     constructor(
         @InjectRepository(Movement)
         private movementsRepository: Repository<Movement>,
-        @InjectRepository(Product)
-        private productsRepository: Repository<Product>
+        private productsService: ProductsService
     ){}
 
     findAll(): Promise<Movement[]> {
@@ -32,9 +32,7 @@ export class MovementsService {
         userId?: number,
         notes?: string
     }): Promise<Movement>{
-        const product = await this.productsRepository.findOne({
-        where: { id: data.productId }
-        });
+        const product = await this.productsService.findOne(data.productId);
                 
         if (!product) {
         throw new NotFoundException('Product not found');
@@ -46,7 +44,7 @@ export class MovementsService {
 
         if (newStock < 0) throw new NotFoundException('Stock Insuficiente');
         
-        await this.productsRepository.update(data.productId, { stock: newStock });
+        await this.productsService.update(data.productId, { stock: newStock });
 
         const movement = this.movementsRepository.create({
             type: data.type,

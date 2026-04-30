@@ -1,23 +1,32 @@
 "use client"
 
 import * as React from "react"
-
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
+
 } from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import {
+  GalleryVerticalEndIcon,
+  LayoutDashboardIcon,
+  Package,
+  ChevronRight,
+} from "lucide-react"
 
-
-export function AppSidebar({ user, handleLogout }) {
-  // This is sample data.
+export function AppSidebar({ user, handleLogout, onNavigate, activePage }) {
   const data = {
     user: {
       name: user?.name,
@@ -25,160 +34,88 @@ export function AppSidebar({ user, handleLogout }) {
       avatar: "/avatars/shadcn.jpg",
     },
     teams: [
-      {
-        name: "DevOps HQ",
-        logo: (
-          <GalleryVerticalEndIcon />
-        ),
-        plan: "Enterprise",
-      },
-      {
-        name: "Acme Corp.",
-        logo: (
-          <AudioLinesIcon />
-        ),
-        plan: "Startup",
-      },
-      {
-        name: "Evil Corp.",
-        logo: (
-          <TerminalIcon />
-        ),
-        plan: "Free",
-      },
+      { name: "DevOps HQ", logo: <GalleryVerticalEndIcon />, plan: "Enterprise" },
     ],
     navMain: [
       {
-        title: "Playground",
+        title: "Dashboard",
         url: "#",
-        icon: (
-          <TerminalSquareIcon />
-        ),
-        isActive: true,
+        icon: <LayoutDashboardIcon />,
+        isActive: activePage === 'dashboard',
+        onClick: () => onNavigate('dashboard'),
+        // items: [],
+      },
+      {
+        title: "Inventario",
+        url: "#",
+        icon: <Package />,
+        isActive: ['products','categories','suppliers','movements'].includes(activePage),
         items: [
-          {
-            title: "History",
-            url: "#",
-          },
-          {
-            title: "Starred",
-            url: "#",
-          },
-          {
-            title: "Settings",
-            url: "#",
-          },
+          { title: "Productos",    url: "#", handleClick: () => onNavigate('products') },
+          { title: "Categorías",   url: "#", handleClick: () => onNavigate('categories') },
+          { title: "Proveedores",  url: "#", handleClick: () => onNavigate('suppliers') },
+          { title: "Movimientos",  url: "#", handleClick: () => onNavigate('movements') },
         ],
-      },
-      {
-        title: "Models",
-        url: "#",
-        icon: (
-          <BotIcon />
-        ),
-        items: [
-          {
-            title: "Genesis",
-            url: "#",
-          },
-          {
-            title: "Explorer",
-            url: "#",
-          },
-          {
-            title: "Quantum",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Documentation",
-        url: "#",
-        icon: (
-          <BookOpenIcon />
-        ),
-        items: [
-          {
-            title: "Introduction",
-            url: "#",
-          },
-          {
-            title: "Get Started",
-            url: "#",
-          },
-          {
-            title: "Tutorials",
-            url: "#",
-          },
-          {
-            title: "Changelog",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Settings",
-        url: "#",
-        icon: (
-          <Settings2Icon />
-        ),
-        items: [
-          {
-            title: "General",
-            url: "#",
-          },
-          {
-            title: "Team",
-            url: "#",
-          },
-          {
-            title: "Billing",
-            url: "#",
-          },
-          {
-            title: "Limits",
-            url: "#",
-          },
-        ],
-      },
-    ],
-    projects: [
-      {
-        name: "Design Engineering",
-        url: "#",
-        icon: (
-          <FrameIcon />
-        ),
-      },
-      {
-        name: "Sales & Marketing",
-        url: "#",
-        icon: (
-          <PieChartIcon />
-        ),
-      },
-      {
-        name: "Travel",
-        url: "#",
-        icon: (
-          <MapIcon />
-        ),
       },
     ],
   }
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <SidebarMenu>
+          {data?.navMain?.map((el, index) => {
+
+            const noChildren = () => (
+              <SidebarGroup key={index}>
+                <SidebarMenuButton onClick={() => onNavigate('dashboard')} asChild>
+                  <a href="#">
+                    {el?.icon}
+                    <span>{ el?.title }</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarGroup>
+            )
+
+            const hasChildren = () => (
+              <Collapsible key={index} asChild defaultOpen className="group/collapsible">
+                <SidebarGroup>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton tooltip={el.title}>
+                        {el?.icon}
+                        <span>{el.title}</span>
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {el.items?.map((subItem) => (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton onClick={() => subItem?.handleClick()} asChild>
+                              <a href={subItem.url}>
+                                {/* ICON HERE */}
+                                <span>{subItem.title}</span>
+                              </a>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            )
+
+            return Object.hasOwn(el, 'items') ? hasChildren() : noChildren()
+          })}
+        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} logOut={handleLogout}/>
+        <NavUser user={user} logOut={handleLogout} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  );
+  )
 }

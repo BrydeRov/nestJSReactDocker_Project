@@ -102,7 +102,7 @@ export default function PipelinesCard() {
             )
         })}
         {pipelines?.length === 0 &&  Array.from({ length: 3 }, (_, i) => (
-            <div className="flex flex-col my-2">
+            <div key={i} className="flex flex-col my-2">
               <div className="flex flex-row justify-between w-full">
                 <Card className='w-full'>
                   <CardContent className='flex flex-row justify-between'>

@@ -1,6 +1,6 @@
 import { Product } from 'src/products/product.entity'
 import { User } from 'src/users/user.entity'
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany } from 'typeorm'
 
 @Entity()
 export class Movement{
@@ -18,9 +18,9 @@ export class Movement{
 
     @CreateDateColumn()
     createdAt!: Date
-
+    
     @ManyToOne(() => Product, product => product.movements)
-    product!: Product
+    product!: Product;
 
     @ManyToOne(() => User, { nullable: true })
     user!: User

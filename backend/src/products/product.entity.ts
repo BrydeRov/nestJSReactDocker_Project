@@ -1,7 +1,7 @@
 import { Category } from 'src/categories/category.entity'
 import { Movement } from 'src/movements/movement.entity'
 import { Supplier } from 'src/suppliers/supplier.entity'
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm'
 
 @Entity()
 export class Product{
@@ -26,6 +26,6 @@ export class Product{
     @ManyToOne(() => Supplier, supplier => supplier.products, { nullable: true })
     supplier!: Supplier
 
-    @ManyToOne(() => Movement, movement => movement.product, { nullable: true })
-    movements!: Movement
+    @OneToMany(() => Movement, movement => movement.product)
+    movements!: Movement[]
 }
