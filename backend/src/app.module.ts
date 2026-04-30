@@ -6,6 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { CategoriesModule } from './categories/categories.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { ProductsModule } from './products/products.module';
+import { AlertsModule } from './alerts/alerts.module';
+import { MovementsModule } from './movements/movements.module';
 
 @Module({
   imports: [
@@ -23,6 +28,11 @@ import { ScheduleModule } from '@nestjs/schedule';
     UsersModule,
     AuthModule,
     DashboardModule,
+    CategoriesModule,
+    SuppliersModule,
+    ProductsModule,
+    AlertsModule,
+    MovementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

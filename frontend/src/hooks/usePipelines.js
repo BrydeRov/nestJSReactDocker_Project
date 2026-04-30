@@ -14,17 +14,17 @@ export function usePipelines() {
 
     useEffect(() => {
         socket.on('connect', () => {
-            console.log('WebSocket Connected')
+            // console.log('WebSocket Connected')
             setConnected(true)
         })
 
         socket.on('disconnect', () => {
-            console.log('WebSocket disconnected')
+            // console.log('WebSocket disconnected')
             setConnected(false)
         })
 
         socket.on('pipelines_update', (data) => {
-            console.log('Pipelines Updated', data)
+            // console.log('Pipelines Updated', data)
             setPipelines(data)
         })
 

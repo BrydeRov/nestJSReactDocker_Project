@@ -117,7 +117,7 @@ export default function PipelinesCard() {
     <CardFooter className='flex flex-col'>
         <p>
           Last deploy: 
-          {formatDistanceToNow(new Date(pipelines?.[0]?.createdAt), {
+          {pipelines?.length > 0 && formatDistanceToNow(new Date(pipelines?.[0]?.createdAt), {
             addSuffix: true,
           })}
       </p>

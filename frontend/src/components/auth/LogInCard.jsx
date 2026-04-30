@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { FaGoogle, FaApple } from 'react-icons/fa'
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginCard({ onLogin }) {
   const [view, setView] = useState('login')
@@ -63,6 +64,10 @@ export default function LoginCard({ onLogin }) {
     }
   }
 
+  const handleGoogleAuth = async () => {
+
+  }
+
   if (token) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
@@ -98,9 +103,7 @@ export default function LoginCard({ onLogin }) {
 
           {/* Social Buttons */}
           <div className="flex flex-col gap-2">
-            <Button variant="outline" className="flex gap-2 items-center justify-center">
-              <FaGoogle /> Continuar con Google
-            </Button>
+            <GoogleLogin onSuccess={(response) => console.log(response)} onError={(error) => console.log(error)}/>
             <Button variant="outline" className="flex gap-2 items-center justify-center">
               <FaApple /> Continuar con Apple
             </Button>
