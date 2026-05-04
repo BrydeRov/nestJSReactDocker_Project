@@ -17,4 +17,10 @@ export class DashboardController {
   getPipelines() {
     return this.dashboardService.getPipelines()
   }
+
+  @Get('containers')
+  @UseGuards(JwtAuthGuard)
+  getContainers() {
+    return this.dashboardService.getContainers()
+  }
 }

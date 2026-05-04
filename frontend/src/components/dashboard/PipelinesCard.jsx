@@ -114,14 +114,14 @@ export default function PipelinesCard() {
             </div>
         ))}
       </CardContent>
-    <CardFooter className='flex flex-col'>
-        <p>
-          Last deploy: 
-          {pipelines?.length > 0 && formatDistanceToNow(new Date(pipelines?.[0]?.createdAt), {
-            addSuffix: true,
-          })}
+    <CardFooter className='flex flex-row justify-between'>
+      <p className="my-auto">
+        Last deploy: 
+        {pipelines?.length > 0 && formatDistanceToNow(new Date(pipelines?.[0]?.createdAt), {
+          addSuffix: true,
+        })}
       </p>
-      <div className="flex items-center justify-between border-t pt-2">
+      <div className="flex items-center justify-between pt-2">
         <Button
           variant="ghost"
           size="sm"
