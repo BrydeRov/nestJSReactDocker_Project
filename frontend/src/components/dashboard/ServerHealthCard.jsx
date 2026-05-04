@@ -7,15 +7,9 @@ import { Progress } from "../ui/progress";
 import { usePolling } from "@/hooks/usePolling";
 
 export default function ServerHealthCard() {
-  const { data } = usePolling(        // ← directly here, not inside any function
+  const { hardwareUsage } = usePolling(        // ← directly here, not inside any function
     `${import.meta.env.VITE_BACKEND_URL}/dashboard/metrics`
   )  
-  const hardwareUsage = [
-    { name: 'CPU',    data: data?.cpu    ?? 0  },
-    { name: 'Memory', data: data?.memory ?? 0  },
-    { name: 'Uptime', data: data?.uptime ?? '...' },
-    { name: 'Disk',   data: data?.disk   ?? 0  },
-  ]
 
   return(
     <Card size="sm" className="w-full max-w-sm">
