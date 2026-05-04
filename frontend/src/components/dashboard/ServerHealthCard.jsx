@@ -7,7 +7,7 @@ import { Progress } from "../ui/progress";
 import { usePolling } from "@/hooks/usePolling";
 
 export default function ServerHealthCard() {
-  const { hardwareUsage } = usePolling(        // ← directly here, not inside any function
+  const { data } = usePolling(        // ← directly here, not inside any function
     `${import.meta.env.VITE_BACKEND_URL}/dashboard/metrics`
   )  
 
@@ -17,7 +17,7 @@ export default function ServerHealthCard() {
         <CardTitle className='font-bold text-gray-300'>Server Health</CardTitle>
       </CardHeader>
       <CardContent className='flex flex-wrap justify-center gap-2 w-full'>
-        {hardwareUsage?.map((el, index) => {            
+        {data?.map((el, index) => {            
           const colorOnUsage = (usage) => {
             if(usage >= 85) return 'bg-red-500'
             else if(usage >= 55){ return 'bg-yellow-500' }
