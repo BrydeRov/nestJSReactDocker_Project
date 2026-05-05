@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 const backendURL = import.meta.env.VITE_BACKEND_URL
-const socket = io(
-    backendURL, {
-        transports: ['websocket']
-    }
-)
+const socket = io(backendURL, { transports: ['websocket'] })
 
 export function usePipelines() {
     const [pipelines, setPipelines] = useState([])
@@ -24,8 +20,7 @@ export function usePipelines() {
         })
 
         socket.on('pipelines_update', (data) => {
-            // console.log('Pipelines Updated', data)
-            setPipelines(data)
+            setPipelines(Array.isArray(data) ? data : [])  // ← guard
         })
 
         return () => {
