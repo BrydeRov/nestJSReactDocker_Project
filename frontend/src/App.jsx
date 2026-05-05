@@ -49,7 +49,11 @@ export default function App() {
           <div className="flex flex-wrap justify-center gap-5 w-full">
             <PipelinesCard />
             <ServerHealthCard />
-            <ContainersCard />
+            {
+              import.meta.env.VITE_NODE_ENV === 'development' && (
+                <ContainersCard />
+              )
+            }
             <AlertsCard />
           </div>
         )
