@@ -25,6 +25,7 @@ export class ProductsController {
     @Post()
     create(@Body() body: { 
         name: string,
+        imageURL?: string,
         price: number,
         stock: number,
         minStock?: number,
@@ -37,6 +38,7 @@ export class ProductsController {
     @Put(':id')
     update(@Param('id') id: number ,@Body() body: { 
         name: string,
+        imageURL?: string,
         price: number,
         stock: number,
         minStock?: number,

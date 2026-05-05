@@ -4,13 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Package, EllipsisVertical, Plus } from 'lucide-react'
+import {
+    Popover,
+    PopoverContent,
+    PopoverHeader,
+    PopoverTitle,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    // AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function ProductsPage() {
     const api = useApi()
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
-    const [showForm, setShowForm] = useState(false)
-    const [form, setForm] = useState({ name: '', price: '', stock: '', minStock: '10' })
+    const [form, setForm] = useState({ name: '', imageURL: null, price: '', stock: '', minStock: '10' })
 
     const load = async () => {
         try {
@@ -23,15 +41,17 @@ export default function ProductsPage() {
 
     useEffect(() => { load() }, [])
 
+    useEffect(() => { console.log(form?.imageURL) }, [form?.imageURL])
+
     const handleCreate = async () => {
         await api.post('/products', {
-        name: form.name,
-        price: parseFloat(form.price),
-        stock: parseInt(form.stock),
-        minStock: parseInt(form.minStock),
+            name: form.name,
+            imageURL: form.imageURL,
+            price: parseFloat(form.price),
+            stock: parseInt(form.stock),
+            minStock: parseInt(form.minStock),
         })
-        setForm({ name: '', price: '', stock: '', minStock: '10' })
-        setShowForm(false)
+        setForm({ name: '', imageURL: null, price: '', stock: '', minStock: '10' })
         load()
     }
 
@@ -46,49 +66,96 @@ export default function ProductsPage() {
         <div className="space-y-4">
         <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Productos</h2>
-            <Button onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Cancelar' : '+ Nuevo producto'}
-            </Button>
+            <AlertDialog>
+                <AlertDialogTrigger render={<Button className='rounded-sm' />}>
+                    <Plus className='w-4 h-4'/>
+                    Nuevo producto
+                </AlertDialogTrigger>
+                <AlertDialogContent size='w-[70vw]'>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Register new product</AlertDialogTitle>
+                        <div className='grid grid-flow-col grid-cols-2 w-full gap-4'>
+                            <div className='flex flex-col w-full gap-3'>
+                                <Input placeholder="URL Imagen" value={form?.imageURL} onChange={e => setForm({...form, imageURL: e.target.value})} />
+                                <Input placeholder="Nombre" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                                <Input placeholder="Precio" type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} />
+                                <Input placeholder="Stock inicial" type="number" value={form.stock} onChange={e => setForm({...form, stock: e.target.value})} />
+                                <Input placeholder="Stock mínimo" type="number" value={form.minStock} onChange={e => setForm({...form, minStock: e.target.value})} />
+                            </div>                     
+                            {
+                                form?.imageURL !== null || form?.imageURL !== '' ? (
+                                    <img
+                                        src={form.imageURL}
+                                        alt="Producto"
+                                        className="w-full h-82 object-contain rounded-md"
+                                    />
+                                ) : (
+                                    <Card className="w-full h-82 object-cover rounded-md">
+                                        <CardContent className='my-auto'>No Image</CardContent>
+                                    </Card>
+                                )
+                            }
+                        </div>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleCreate}>
+                            Guardar
+                        </AlertDialogAction>
+                        </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
-
-        {showForm && (
-            <Card>
-            <CardHeader><CardTitle>Nuevo producto</CardTitle></CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
-                <Input placeholder="Nombre" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
-                <Input placeholder="Precio" type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} />
-                <Input placeholder="Stock inicial" type="number" value={form.stock} onChange={e => setForm({...form, stock: e.target.value})} />
-                <Input placeholder="Stock mínimo" type="number" value={form.minStock} onChange={e => setForm({...form, minStock: e.target.value})} />
-                <Button onClick={handleCreate} className="col-span-2">Guardar</Button>
-            </CardContent>
-            </Card>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {products.map(p => (
-            <Card key={p.id} className={p.stock <= p.minStock ? 'border-destructive' : ''}>
-                <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">{p.name}</CardTitle>
-                    {p.stock <= p.minStock && (
-                    <Badge variant="destructive">Stock bajo</Badge>
-                    )}
-                </div>
-                </CardHeader>
-                <CardContent className="space-y-1">
-                <p className="text-2xl font-bold">${p.price}</p>
-                <p className="text-sm text-muted-foreground">
-                    Stock: <span className={p.stock <= p.minStock ? 'text-destructive font-bold' : 'font-bold'}>{p.stock}</span> / min: {p.minStock}
-                </p>
-                {p.category && <p className="text-xs text-muted-foreground">Categoría: {p.category.name}</p>}
-                {p.supplier && <p className="text-xs text-muted-foreground">Proveedor: {p.supplier.name}</p>}
-                <Button variant="destructive" size="sm" className="w-full mt-2" onClick={() => handleDelete(p.id)}>
-                    Eliminar
-                </Button>
-                </CardContent>
-            </Card>
-            ))}
+            {products.map(p => {
+                const lowStock = p.stock <= p.minStock
+
+                function formatNumber(num) {
+                    if (num >= 1000) {
+                        // Divide, fix to 1 decimal, replace ".0" with empty string
+                        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+                    }
+                    return num;
+                }
+
+                return (
+                    <Card 
+                        key={p.id} 
+                        className={`max-w-md ${p.stock <= p.minStock ? 'border-red-500' : ''}`}
+                    >
+                        <CardHeader className='relative flex flex-col gap-4'>
+                            <div className='absolute right-1.5 -top-2 z-40'>
+                                <Popover>
+                                    <PopoverTrigger render={
+                                        <Button className='  rounded-md p-1' variant="ghost" size="icon">
+                                            <EllipsisVertical className='w-4 h-4' />
+                                        </Button>
+                                        } />
+                                    <PopoverContent align="start">
+                                        <PopoverHeader>
+                                            <PopoverTitle>Dimensions</PopoverTitle>
+                                        </PopoverHeader>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+
+                            <Package className='w-36 h-36 shadow-md mx-auto' />
+                            <CardTitle className='flex flex-col'>
+                                <span className='text-xs'>{p?.supplier?.name || 'Proveedor no especificado'}</span>
+                                <span className='text-lg'>{p?.name}</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className='flex flex-row justify-between gap-3'>
+                            <p className="text-lg font-bold">${ Number(p?.price || 0).toFixed(2) }</p>
+                            <Badge variant={p.stock <= p.minStock ? "destructive" : "default"}>
+                                Stock: {formatNumber(p?.stock || 0)}
+                            </Badge>
+                        </CardContent>
+                    </Card>
+                )
+            })}
         </div>
-        </div>
+    </div>
     )
 }

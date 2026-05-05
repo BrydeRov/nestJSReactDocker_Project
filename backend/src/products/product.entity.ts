@@ -17,6 +17,9 @@ export class Product{
     @Column({ default: 0 })
     stock!: number
 
+    @Column({ nullable: true })
+    imageURL!: string
+
     @Column({ default: 10 })
     minStock!: number
 
